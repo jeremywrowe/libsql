@@ -18,7 +18,7 @@ use tonic::transport::server::TcpConnectInfo;
 use tonic::Status;
 use uuid::Uuid;
 
-use crate::auth::Auth;
+use crate::auth::AuthType;
 use crate::connection::config::DatabaseConfig;
 use crate::namespace::{NamespaceName, NamespaceStore, PrimaryNamespaceMaker};
 use crate::replication::primary::frame_stream::FrameStream;
@@ -31,7 +31,7 @@ use super::extract_namespace;
 pub struct ReplicationLogService {
     namespaces: NamespaceStore<PrimaryNamespaceMaker>,
     idle_shutdown_layer: Option<IdleShutdownKicker>,
-    auth: Option<Arc<Auth>>,
+    auth: Option<Arc<AuthType>>,
     disable_namespaces: bool,
     session_token: Bytes,
     collect_stats: bool,
@@ -47,7 +47,7 @@ impl ReplicationLogService {
     pub fn new(
         namespaces: NamespaceStore<PrimaryNamespaceMaker>,
         idle_shutdown_layer: Option<IdleShutdownKicker>,
-        auth: Option<Arc<Auth>>,
+        auth: Option<Arc<AuthType>>,
         disable_namespaces: bool,
         collect_stats: bool,
     ) -> Self {

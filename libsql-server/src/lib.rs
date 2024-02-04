@@ -7,7 +7,7 @@ use std::process::Command;
 use std::str::FromStr;
 use std::sync::{Arc, Weak};
 
-use crate::auth::Auth;
+use crate::auth::AuthType;
 use crate::connection::{Connection, MakeConnection};
 use crate::error::Error;
 use crate::metrics::DIRTY_STARTUP;
@@ -137,7 +137,7 @@ struct Services<M: MakeNamespace, A, P, S, C> {
     disable_namespaces: bool,
     disable_default_namespace: bool,
     db_config: DbConfig,
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     path: Arc<Path>,
     shutdown: Arc<Notify>,
 }
@@ -503,7 +503,7 @@ struct Primary<'a, A> {
     base_path: Arc<Path>,
     disable_namespaces: bool,
     max_active_namespaces: usize,
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     join_set: &'a mut JoinSet<anyhow::Result<()>>,
     meta_store_config: Option<MetaStoreConfig>,
     max_concurrent_connections: usize,
@@ -621,7 +621,7 @@ struct Replica<C> {
     extensions: Arc<[PathBuf]>,
     db_config: DbConfig,
     base_path: Arc<Path>,
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     disable_namespaces: bool,
     max_active_namespaces: usize,
     meta_store_config: Option<MetaStoreConfig>,

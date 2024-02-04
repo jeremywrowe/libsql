@@ -9,13 +9,13 @@ use tokio_stream::StreamExt;
 use tonic::{transport::Channel, Request, Status};
 
 use crate::{
-    auth::Auth,
+    auth::AuthType,
     namespace::{NamespaceStore, ReplicaNamespaceMaker},
 };
 
 pub struct ReplicaProxyService {
     client: ProxyClient<Channel>,
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     disable_namespaces: bool,
     namespaces: NamespaceStore<ReplicaNamespaceMaker>,
 }
@@ -25,7 +25,7 @@ impl ReplicaProxyService {
         channel: Channel,
         uri: Uri,
         namespaces: NamespaceStore<ReplicaNamespaceMaker>,
-        auth: Arc<Auth>,
+        auth: Arc<AuthType>,
         disable_namespaces: bool,
     ) -> Self {
         let client = ProxyClient::with_origin(channel, uri);

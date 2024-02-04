@@ -8,7 +8,7 @@ use enclose::enclose;
 use tokio::pin;
 use tokio::sync::{mpsc, oneshot};
 
-use crate::auth::Auth;
+use crate::auth::AuthType;
 use crate::namespace::{MakeNamespace, NamespaceStore};
 use crate::net::Conn;
 use crate::utils::services::idle_shutdown::IdleKicker;
@@ -22,7 +22,7 @@ mod session;
 
 struct Server<F: MakeNamespace> {
     namespaces: NamespaceStore<F>,
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     idle_kicker: Option<IdleKicker>,
     max_response_size: u64,
     next_conn_id: AtomicU64,
@@ -43,7 +43,7 @@ pub struct Upgrade {
 
 #[allow(clippy::too_many_arguments)]
 pub async fn serve<F: MakeNamespace>(
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     idle_kicker: Option<IdleKicker>,
     max_response_size: u64,
     mut accept_rx: mpsc::Receiver<Accept>,

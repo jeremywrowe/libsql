@@ -9,7 +9,7 @@ use tokio::time::Duration;
 use tonic::transport::Channel;
 use tower::ServiceExt;
 
-use crate::auth::{self, Auth};
+use crate::auth::{self, AuthType};
 use crate::net::{AddrIncoming, Connector};
 
 pub struct RpcClientConfig<C = HttpConnector> {
@@ -78,8 +78,8 @@ impl<A> Default for UserApiConfig<A> {
 }
 
 impl<A> UserApiConfig<A> {
-    pub fn get_auth(&self) -> anyhow::Result<Auth> {
-        let mut auth = Auth::default();
+    pub fn get_auth(&self) -> anyhow::Result<AuthType> {
+        let mut auth = AuthType::default();
 
         if let Some(arg) = self.http_auth.as_deref() {
             if let Some(param) = auth::parse_http_basic_auth_arg(arg)? {

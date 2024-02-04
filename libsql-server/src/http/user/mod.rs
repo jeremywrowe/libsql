@@ -28,7 +28,7 @@ use tonic::transport::Server;
 
 use tower_http::{compression::CompressionLayer, cors};
 
-use crate::auth::{Auth, Authenticated};
+use crate::auth::{AuthType, Authenticated};
 use crate::connection::Connection;
 use crate::database::Database;
 use crate::error::Error;
@@ -226,7 +226,7 @@ async fn handle_hrana_pipeline<F: MakeNamespace>(
 /// Router wide state that each request has access too via
 /// axum's `State` extractor.
 pub(crate) struct AppState<F: MakeNamespace> {
-    auth: Arc<Auth>,
+    auth: Arc<AuthType>,
     namespaces: NamespaceStore<F>,
     upgrade_tx: mpsc::Sender<hrana::ws::Upgrade>,
     hrana_http_srv: Arc<hrana::http::Server<<F::Database as Database>::Connection>>,
@@ -252,7 +252,7 @@ impl<F: MakeNamespace> Clone for AppState<F> {
 }
 
 pub struct UserApi<M: MakeNamespace, A, P, S> {
-    pub auth: Arc<Auth>,
+    pub auth: Arc<AuthType>,
     pub http_acceptor: Option<A>,
     pub hrana_ws_acceptor: Option<A>,
     pub namespaces: NamespaceStore<M>,
@@ -496,7 +496,7 @@ where
     }
 }
 
-impl<F: MakeNamespace> FromRef<AppState<F>> for Arc<Auth> {
+impl<F: MakeNamespace> FromRef<AppState<F>> for Arc<AuthType> {
     fn from_ref(input: &AppState<F>) -> Self {
         input.auth.clone()
     }

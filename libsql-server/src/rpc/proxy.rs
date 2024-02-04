@@ -15,7 +15,7 @@ use libsql_replication::rpc::replication::NAMESPACE_DOESNT_EXIST;
 use rusqlite::types::ValueRef;
 use uuid::Uuid;
 
-use crate::auth::{Auth, Authenticated};
+use crate::auth::{AuthType, Authenticated};
 use crate::connection::Connection;
 use crate::database::{Database, PrimaryConnection};
 use crate::namespace::{NamespaceName, NamespaceStore, PrimaryNamespaceMaker};
@@ -281,14 +281,14 @@ pub mod rpc {
 pub struct ProxyService {
     clients: Arc<RwLock<HashMap<Uuid, Arc<PrimaryConnection>>>>,
     namespaces: NamespaceStore<PrimaryNamespaceMaker>,
-    auth: Option<Arc<Auth>>,
+    auth: Option<Arc<AuthType>>,
     disable_namespaces: bool,
 }
 
 impl ProxyService {
     pub fn new(
         namespaces: NamespaceStore<PrimaryNamespaceMaker>,
-        auth: Option<Arc<Auth>>,
+        auth: Option<Arc<AuthType>>,
         disable_namespaces: bool,
     ) -> Self {
         Self {
